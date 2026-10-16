@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { OperationResult, Shift, SwapRequest, User } from "../types";
+import type { OperationResult, Shift, SwapRequest, User } from "../shared/types";
 
 export interface AppDataContextValue {
   users: User[];

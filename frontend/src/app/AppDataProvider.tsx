@@ -1,13 +1,13 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { mockShifts, mockSwapRequests, mockUsers } from "../data/mockData";
+import { mockShifts, mockSwapRequests, mockUsers } from "../shared/mockData";
 import { isShiftFree } from "../shared/utils";
 import type {
   OperationResult,
   Shift,
   SwapRequest,
   SwapRequestStatus,
-} from "../types";
+} from "../shared/types";
 import { AppDataContext } from "./AppDataContext";
 import type { AppDataContextValue } from "./AppDataContext";
 import { useAuth } from "./AuthContext";

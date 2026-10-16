@@ -1,4 +1,4 @@
-import type { Shift, SwapRequest, User } from "../types";
+import type { Shift, SwapRequest, User } from "./types";
 
 export const DEMO_PASSWORD = "password";
 

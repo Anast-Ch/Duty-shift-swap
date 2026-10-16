@@ -8,7 +8,7 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { formatShift } from "../shared/utils";
-import type { Shift } from "../types";
+import type { Shift } from "../shared/types";
 
 interface ComparisonModalProps {
   myShift: Shift;

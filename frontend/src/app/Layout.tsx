@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "./AuthContext";
 import { roleLabels } from "../shared/utils";
 
 export default function Layout() {

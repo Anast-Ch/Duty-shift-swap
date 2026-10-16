@@ -8,7 +8,7 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../app/AuthContext";
 
 export default function LoginPage() {
   const { login } = useAuth();

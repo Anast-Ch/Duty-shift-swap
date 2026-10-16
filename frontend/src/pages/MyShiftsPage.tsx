@@ -4,8 +4,8 @@ import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import ShiftCard from "../components/ShiftCard";
-import { useAppData } from "../context/AppDataContext";
-import { useAuth } from "../context/AuthContext";
+import { useAppData } from "../app/AppDataContext";
+import { useAuth } from "../app/AuthContext";
 import { sortShifts } from "../shared/utils";
 
 export default function MyShiftsPage() {

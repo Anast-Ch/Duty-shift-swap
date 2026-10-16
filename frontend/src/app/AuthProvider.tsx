@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { DEMO_PASSWORD, mockUsers } from "../data/mockData";
-import type { User } from "../types";
+import { DEMO_PASSWORD, mockUsers } from "../shared/mockData";
+import type { User } from "../shared/types";
 import { AuthContext } from "./AuthContext";
 
 interface AuthProviderProps {

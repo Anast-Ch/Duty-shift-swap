@@ -4,7 +4,7 @@ import type {
   ShiftStatus,
   SwapRequest,
   SwapRequestStatus,
-} from "../types";
+} from "./types";
 
 export const roleLabels: Record<Role, string> = {
   EMPLOYEE: "Сотрудник",

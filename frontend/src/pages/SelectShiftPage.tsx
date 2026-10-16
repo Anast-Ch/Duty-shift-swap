@@ -12,10 +12,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import ComparisonModal from "../components/ComparisonModal";
+import ComparisonModal from "../features/ComparisonModal";
 import ShiftCard from "../components/ShiftCard";
-import { useAppData } from "../context/AppDataContext";
-import { useAuth } from "../context/AuthContext";
+import { useAppData } from "../app/AppDataContext";
+import { useAuth } from "../app/AuthContext";
 import { formatShift, isShiftFree, sortShifts } from "../shared/utils";
 
 export default function SelectShiftPage() {
