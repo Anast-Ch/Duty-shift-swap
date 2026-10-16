@@ -31,6 +31,14 @@ export const mockUsers: User[] = [
 
 export const mockShifts: Shift[] = [
   {
+    id: "sh0",
+    userId: "u1",
+    date: "2025-01-01",
+    startTime: "08:00",
+    endTime: "16:00",
+    status: "approved",
+  },
+  {
     id: "sh1",
     userId: "u1",
     date: "2026-10-20",

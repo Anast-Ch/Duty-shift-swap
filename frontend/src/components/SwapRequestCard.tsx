@@ -9,13 +9,11 @@ import StatusChip from "./StatusChip";
 
 interface SwapRequestCardProps {
   request: SwapRequest;
-  viewerId?: string;
   actions?: ReactNode;
 }
 
 export default function SwapRequestCard({
   request,
-  viewerId,
   actions,
 }: SwapRequestCardProps) {
   const { getShiftById, getUserById } = useAppData();
@@ -32,21 +30,6 @@ export default function SwapRequestCard({
     );
   }
 
-  const viewerIsInitiator = viewerId === request.initiatorId;
-  const partner = viewerIsInitiator ? respondent : initiator;
-  const title = viewerId
-    ? `Участник: ${partner.name}`
-    : `${initiator.name} и ${respondent.name}`;
-  const lines = viewerId
-    ? [
-        `Вы отдаёте: ${formatShift(viewerIsInitiator ? initiatorShift : respondentShift)}`,
-        `Вы получаете: ${formatShift(viewerIsInitiator ? respondentShift : initiatorShift)}`,
-      ]
-    : [
-        `${initiator.name} отдаёт: ${formatShift(initiatorShift)}`,
-        `${respondent.name} отдаёт: ${formatShift(respondentShift)}`,
-      ];
-
   return (
     <Paper sx={{ p: 2 }}>
       <Stack spacing={1}>
@@ -55,13 +38,16 @@ export default function SwapRequestCard({
           sx={{ justifyContent: "space-between", alignItems: "center" }}
         >
           <Typography variant="h6" component="h3">
-            {title}
+            {initiator.name} и {respondent.name}
           </Typography>
           <StatusChip kind="request" status={request.status} />
         </Stack>
-        {lines.map((line) => (
-          <Typography key={line}>{line}</Typography>
-        ))}
+        <Typography>
+          {initiator.name}: {formatShift(initiatorShift)}
+        </Typography>
+        <Typography>
+          {respondent.name}: {formatShift(respondentShift)}
+        </Typography>
         <Typography variant="body2">
           Создан: {formatDateTime(request.createdAt)}
         </Typography>

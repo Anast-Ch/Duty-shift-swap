@@ -1,23 +1,34 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Tab from "@mui/material/Tab";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
-import SwapRequestCard from "../components/SwapRequestCard";
+import StatusChip from "../components/StatusChip";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
-import { sortRequests } from "../shared/utils";
-import type { OperationResult } from "../shared/types";
+import { formatDateTime, formatShift, sortRequests } from "../shared/utils";
+import type { OperationResult, SwapRequest } from "../shared/types";
 
 export default function SwapRequestsPage() {
   const [searchParams] = useSearchParams();
   const { currentUser } = useAuth();
-  const { swapRequests, acceptSwapRequest, declineSwapRequest } = useAppData();
+  const {
+    swapRequests,
+    getShiftById,
+    getUserById,
+    acceptSwapRequest,
+    declineSwapRequest,
+  } = useAppData();
   const [tab, setTab] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -31,10 +42,29 @@ export default function SwapRequestsPage() {
   const incoming = sortRequests(
     swapRequests.filter((request) => request.respondentId === currentUser.id),
   );
-  const visibleRequests = tab === 0 ? outgoing : incoming;
+  const visible = tab === 0 ? outgoing : incoming;
 
   function handleResult(result: OperationResult) {
     setErrorMessage(result.ok ? "" : result.error);
+  }
+
+  function partnerName(request: SwapRequest): string {
+    const partnerId = tab === 0 ? request.respondentId : request.initiatorId;
+    const partner = getUserById(partnerId);
+    return partner ? partner.name : "-";
+  }
+
+  function givingShiftId(request: SwapRequest): string {
+    return tab === 0 ? request.initiatorShiftId : request.respondentShiftId;
+  }
+
+  function receivingShiftId(request: SwapRequest): string {
+    return tab === 0 ? request.respondentShiftId : request.initiatorShiftId;
+  }
+
+  function shiftText(shiftId: string): string {
+    const shift = getShiftById(shiftId);
+    return shift ? formatShift(shift) : "-";
   }
 
   return (
@@ -52,44 +82,62 @@ export default function SwapRequestsPage() {
           <Tab label="Входящие" />
         </Tabs>
       </Paper>
-      {visibleRequests.length === 0 ? (
+      {visible.length === 0 ? (
         <Paper sx={{ p: 3 }}>
           <Typography>Нет запросов</Typography>
         </Paper>
       ) : (
-        <Box
-          sx={{
-            display: "grid",
-            gap: 2,
-            gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
-          }}
-        >
-          {visibleRequests.map((request) => (
-            <SwapRequestCard
-              key={request.id}
-              request={request}
-              viewerId={currentUser.id}
-              actions={
-                tab === 1 && request.status === "sent" ? (
-                  <Stack direction="row" spacing={1}>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleResult(acceptSwapRequest(request.id))}
-                    >
-                      Принять
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      onClick={() => handleResult(declineSwapRequest(request.id))}
-                    >
-                      Отклонить
-                    </Button>
-                  </Stack>
-                ) : null
-              }
-            />
-          ))}
-        </Box>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Создан</TableCell>
+                <TableCell>{tab === 0 ? "Кому" : "От кого"}</TableCell>
+                <TableCell>Вы отдаёте</TableCell>
+                <TableCell>Вы получаете</TableCell>
+                <TableCell>Статус</TableCell>
+                <TableCell>Действия</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {visible.map((request) => (
+                <TableRow key={request.id}>
+                  <TableCell>{formatDateTime(request.createdAt)}</TableCell>
+                  <TableCell>{partnerName(request)}</TableCell>
+                  <TableCell>{shiftText(givingShiftId(request))}</TableCell>
+                  <TableCell>{shiftText(receivingShiftId(request))}</TableCell>
+                  <TableCell>
+                    <StatusChip kind="request" status={request.status} />
+                  </TableCell>
+                  <TableCell>
+                    {tab === 1 && request.status === "sent" ? (
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() =>
+                            handleResult(acceptSwapRequest(request.id))
+                          }
+                        >
+                          Принять
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() =>
+                            handleResult(declineSwapRequest(request.id))
+                          }
+                        >
+                          Отклонить
+                        </Button>
+                      </Stack>
+                    ) : null}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Stack>
   );

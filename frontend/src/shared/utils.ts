@@ -74,6 +74,11 @@ export function isShiftFree(shift: Shift, requests: SwapRequest[]): boolean {
   );
 }
 
+export function isUpcoming(shift: Shift): boolean {
+  const today = new Date().toISOString().slice(0, 10);
+  return shift.date >= today;
+}
+
 export function sortShifts(shifts: Shift[]): Shift[] {
   return [...shifts].sort((a, b) =>
     (a.date + a.startTime).localeCompare(b.date + b.startTime),

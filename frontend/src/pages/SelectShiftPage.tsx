@@ -16,7 +16,7 @@ import ComparisonModal from "../features/ComparisonModal";
 import ShiftCard from "../components/ShiftCard";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
-import { formatShift, isShiftFree, sortShifts } from "../shared/utils";
+import { formatShift, isShiftFree, isUpcoming, sortShifts } from "../shared/utils";
 
 export default function SelectShiftPage() {
   const navigate = useNavigate();
@@ -41,6 +41,8 @@ export default function SelectShiftPage() {
     problem = "Смена не найдена";
   } else if (myShift.userId !== currentUser.id) {
     problem = "Начать обмен можно только со своей смены";
+  } else if (!isUpcoming(myShift)) {
+    problem = "Нельзя обменять прошедшую смену";
   } else if (!isShiftFree(myShift, swapRequests)) {
     problem = "Эта смена уже участвует в обмене";
   }
@@ -62,7 +64,9 @@ export default function SelectShiftPage() {
   const candidates = sortShifts(
     shifts.filter(
       (shift) =>
-        shift.userId !== currentUser.id && isShiftFree(shift, swapRequests),
+        shift.userId !== currentUser.id &&
+        isShiftFree(shift, swapRequests) &&
+        isUpcoming(shift),
     ),
   );
   const selectedShift = selectedShiftId ? getShiftById(selectedShiftId) : undefined;

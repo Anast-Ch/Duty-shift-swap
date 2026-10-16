@@ -1,12 +1,18 @@
 import { Link as RouterLink } from "react-router-dom";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import ShiftCard from "../components/ShiftCard";
+import Stack from "@mui/material/Stack";
+import StatusChip from "../components/StatusChip";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
-import { sortShifts } from "../shared/utils";
+import { formatDate, formatTimeRange, isUpcoming, sortShifts } from "../shared/utils";
 
 export default function MyShiftsPage() {
   const { currentUser } = useAuth();
@@ -17,12 +23,14 @@ export default function MyShiftsPage() {
   }
 
   const myShifts = sortShifts(
-    shifts.filter((shift) => shift.userId === currentUser.id),
+    shifts.filter(
+      (shift) => shift.userId === currentUser.id && isUpcoming(shift),
+    ),
   );
 
   return (
-    <>
-      <Typography variant="h4" component="h1" sx={{ mb: 3 }}>
+    <Stack spacing={2}>
+      <Typography variant="h4" component="h1">
         Мои смены
       </Typography>
       {myShifts.length === 0 ? (
@@ -30,51 +38,56 @@ export default function MyShiftsPage() {
           <Typography>Смен нет</Typography>
         </Paper>
       ) : (
-        <Box
-          sx={{
-            display: "grid",
-            gap: 2,
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
-              md: "repeat(3, 1fr)",
-            },
-          }}
-        >
-          {myShifts.map((shift) => {
-            const isOnExchange = shift.status === "on_exchange";
-            return (
-              <ShiftCard
-                key={shift.id}
-                shift={shift}
-                actions={
-                  <Box>
-                    {isOnExchange ? (
-                      <Button
-                        variant="contained"
-                        size="small"
-                        disabled
-                        title="Смена уже участвует в обмене"
-                      >
-                        Обменять
-                      </Button>
-                    ) : (
-                      <Button
-                        component={RouterLink}
-                        to={`/select-shift?shiftId=${shift.id}`}
-                        variant="contained"
-                        size="small"
-                      >
-                        Обменять
-                      </Button>
-                    )}
-                  </Box>
-                }
-              />
-            );
-          })}
-        </Box>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Дата</TableCell>
+                <TableCell>Время</TableCell>
+                <TableCell>Статус</TableCell>
+                <TableCell>Действия</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {myShifts.map((shift) => {
+                const isOnExchange = shift.status === "on_exchange";
+                return (
+                  <TableRow key={shift.id}>
+                    <TableCell>{formatDate(shift.date)}</TableCell>
+                    <TableCell>
+                      {formatTimeRange(shift.startTime, shift.endTime)}
+                    </TableCell>
+                    <TableCell>
+                      <StatusChip kind="shift" status={shift.status} />
+                    </TableCell>
+                    <TableCell>
+                      {isOnExchange ? (
+                        <Button
+                          variant="contained"
+                          size="small"
+                          disabled
+                          title="Смена уже участвует в обмене"
+                        >
+                          Обменять
+                        </Button>
+                      ) : (
+                        <Button
+                          component={RouterLink}
+                          to={`/select-shift?shiftId=${shift.id}`}
+                          variant="contained"
+                          size="small"
+                        >
+                          Обменять
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
-    </>
+    </Stack>
   );
 }

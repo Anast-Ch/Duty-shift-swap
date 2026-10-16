@@ -16,9 +16,9 @@ const statusStyles: Record<
     borderColor: "#5C8A3A",
   },
   on_exchange: {
-    bgcolor: "#A8C1D9",
-    color: "#1A1A1A",
-    borderColor: "#7A9BBB",
+    bgcolor: "#D96C3A",
+    color: "#F5E6D3",
+    borderColor: "#D96C3A",
   },
   sent: {
     bgcolor: "#6B705C",

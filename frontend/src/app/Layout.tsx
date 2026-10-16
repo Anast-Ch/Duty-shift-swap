@@ -68,7 +68,7 @@ export default function Layout() {
                 to="/senior-queue"
                 sx={navSx(pathname === "/senior-queue")}
               >
-                Очередь старшего
+                Функции старшего
               </Button>
             ) : null}
           </Stack>
