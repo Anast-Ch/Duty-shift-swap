@@ -41,24 +41,38 @@ export default function MyShiftsPage() {
             },
           }}
         >
-          {myShifts.map((shift) => (
-            <ShiftCard
-              key={shift.id}
-              shift={shift}
-              actions={
-                <Box>
-                  <Button
-                    component={RouterLink}
-                    to={`/shift/${shift.id}`}
-                    variant="contained"
-                    size="small"
-                  >
-                    Открыть
-                  </Button>
-                </Box>
-              }
-            />
-          ))}
+          {myShifts.map((shift) => {
+            const isOnExchange = shift.status === "on_exchange";
+            return (
+              <ShiftCard
+                key={shift.id}
+                shift={shift}
+                actions={
+                  <Box>
+                    {isOnExchange ? (
+                      <Button
+                        variant="contained"
+                        size="small"
+                        disabled
+                        title="Смена уже участвует в обмене"
+                      >
+                        Обменять
+                      </Button>
+                    ) : (
+                      <Button
+                        component={RouterLink}
+                        to={`/select-shift?shiftId=${shift.id}`}
+                        variant="contained"
+                        size="small"
+                      >
+                        Обменять
+                      </Button>
+                    )}
+                  </Box>
+                }
+              />
+            );
+          })}
         </Box>
       )}
     </>

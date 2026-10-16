@@ -9,7 +9,6 @@ import LoginPage from "../pages/LoginPage";
 import MyShiftsPage from "../pages/MyShiftsPage";
 import SelectShiftPage from "../pages/SelectShiftPage";
 import SeniorQueuePage from "../pages/SeniorQueuePage";
-import ShiftDetailsPage from "../pages/ShiftDetailsPage";
 import SwapRequestsPage from "../pages/SwapRequestsPage";
 
 function PublicOnly() {
@@ -65,7 +64,6 @@ export default function AppRoutes() {
       </Route>
       <Route element={<RequireAuth />}>
         <Route path="/" element={<MyShiftsPage />} />
-        <Route path="/shift/:id" element={<ShiftDetailsPage />} />
         <Route path="/select-shift" element={<SelectShiftPage />} />
         <Route path="/swap-requests" element={<SwapRequestsPage />} />
         <Route element={<RequireSenior />}>
