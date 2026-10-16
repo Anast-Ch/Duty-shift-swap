@@ -83,21 +83,6 @@ export default function Layout() {
       <Container maxWidth="lg" component="main" sx={{ flexGrow: 1, py: 3 }}>
         <Outlet />
       </Container>
-      <Box
-        component="footer"
-        sx={{
-          bgcolor: "background.paper",
-          borderTop: 1,
-          borderColor: "divider",
-          py: 2,
-        }}
-      >
-        <Container maxWidth="lg">
-          <Typography variant="body2">
-            Обмен сменами дежурств. Учебный проект, ЛР1.
-          </Typography>
-        </Container>
-      </Box>
     </Box>
   );
 }

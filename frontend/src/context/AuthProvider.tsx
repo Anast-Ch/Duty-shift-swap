@@ -12,6 +12,15 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   function login(email: string, password: string): boolean {
+    console.log("LOGIN DEBUG", {
+      emailRaw: email,
+      emailLength: email.length,
+      passwordRaw: password,
+      passwordLength: password.length,
+      demoPassword: DEMO_PASSWORD,
+      allUsers: mockUsers,
+      normalizedEmail: email.trim().toLowerCase(),
+    });
     const normalizedEmail = email.trim().toLowerCase();
     const user = mockUsers.find((item) => item.email === normalizedEmail);
     if (!user || password !== DEMO_PASSWORD) {
