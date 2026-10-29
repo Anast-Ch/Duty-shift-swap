@@ -44,16 +44,24 @@ npm run dev
 
 После запуска приложение доступно по адресу, который покажет Vite (обычно http://localhost:5173/). 
 
+## Запуск Backend (FastAPI)
+1. Перейдите в папку `backend`.
+2. Создайте виртуальное окружение: `python -m venv venv`
+3. Активируйте его: `source venv/bin/activate`
+4. Установите зависимости: `pip install -r requirements.txt`
+5. Убедитесь, что PostgreSQL запущен, и создана база `duty_shift_swap`.
+6. Заполните БД тестовыми данными: `python seed.py`
+7. Запустите сервер: `uvicorn app.main:app --reload`
+8. Документация API доступна по адресу: `http://127.0.0.1:8000/docs`
+
 ## Тестовые аккаунты
 
 Пароль для всех демонстрационных пользователей: `password`.
 
 | Email | Роль |
 |---|---|
-| pv@company.ru | сотрудник (EMPLOYEE) |
-| ak@company.ru | сотрудник (EMPLOYEE) |
-| iv@company.ru | старший (SENIOR) |
-| ds@company.ru | старший (SENIOR) |
+| pv@company.ru | сотрудник|
+| iv@company.ru | старший|
 
 ## Скриншоты
 
