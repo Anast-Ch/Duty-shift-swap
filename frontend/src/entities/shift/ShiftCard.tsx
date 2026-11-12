@@ -13,7 +13,16 @@ interface ShiftCardProps {
 
 export default function ShiftCard({ shift, actions }: ShiftCardProps) {
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper
+      sx={{
+        p: 2,
+        transition: "box-shadow 0.2s, transform 0.2s",
+        "&:hover": {
+          boxShadow: "0 4px 12px rgba(26,26,26,0.12)",
+          transform: "translateY(-2px)",
+        },
+      }}
+    >
       <Stack spacing={1}>
         <Stack
           direction="row"

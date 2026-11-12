@@ -4,6 +4,8 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import DangerButton from "../shared/ui/DangerButton";
+import FadeIn from "../shared/ui/FadeIn";
 import { useAuth } from "./AuthContext";
 import { roleLabels } from "../shared/utils";
 
@@ -34,8 +36,8 @@ export default function Layout() {
         component="header"
         sx={{
           bgcolor: "background.paper",
-          borderBottom: 1,
-          borderColor: "divider",
+          borderBottom: "2px solid",
+          borderColor: "text.primary",
         }}
       >
         <Container
@@ -75,13 +77,15 @@ export default function Layout() {
           <Typography variant="body2">
             {currentUser.name} ({roleLabels[currentUser.role]})
           </Typography>
-          <Button variant="outlined" onClick={logout}>
+          <DangerButton variant="outlined" onClick={logout}>
             Выйти
-          </Button>
+          </DangerButton>
         </Container>
       </Box>
       <Container maxWidth="lg" component="main" sx={{ flexGrow: 1, py: 3 }}>
-        <Outlet />
+        <FadeIn key={pathname}>
+          <Outlet />
+        </FadeIn>
       </Container>
     </Box>
   );

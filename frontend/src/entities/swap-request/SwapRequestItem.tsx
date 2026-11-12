@@ -19,7 +19,7 @@ interface ShiftBlockProps {
 
 function ShiftBlock({ label, shift }: ShiftBlockProps) {
   return (
-    <Box>
+    <Box sx={{ textAlign: "center" }}>
       <Typography variant="caption" sx={{ color: "text.secondary" }}>
         {label}
       </Typography>
@@ -59,11 +59,25 @@ export default function SwapRequestItem({
   const partnerLabel = direction === "outgoing" ? "Кому" : "От кого";
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper
+      sx={{
+        p: 2,
+        transition: "box-shadow 0.2s, transform 0.2s",
+        "&:hover": {
+          boxShadow: "0 4px 12px rgba(26,26,26,0.12)",
+          transform: "translateY(-2px)",
+        },
+      }}
+    >
       <Stack spacing={1.5}>
         <Stack
           direction="row"
-          sx={{ flexWrap: "wrap", alignItems: "center", gap: 2 }}
+          sx={{
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 3,
+          }}
         >
           <ShiftBlock label="Вы отдаёте" shift={givingShift} />
           <Typography
@@ -74,15 +88,27 @@ export default function SwapRequestItem({
             ⇌
           </Typography>
           <ShiftBlock label="Вы получаете" shift={receivingShift} />
-          <Box sx={{ ml: "auto" }}>
-            <StatusChip kind="request" status={request.status} />
-          </Box>
         </Stack>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {`${partnerLabel}: ${userNameOrDash(partner)} • Создан: ${formatDateTime(request.createdAt)}`}
-        </Typography>
+        <Stack
+          direction="row"
+          sx={{
+            flexWrap: "wrap",
+            justifyContent: "center",
+            alignItems: "center",
+            columnGap: 1.5,
+            rowGap: 0.75,
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{ color: "text.secondary", textAlign: "center" }}
+          >
+            {`${partnerLabel}: ${userNameOrDash(partner)} • Создан: ${formatDateTime(request.createdAt)}`}
+          </Typography>
+          <StatusChip kind="request" status={request.status} />
+        </Stack>
         {actions ? (
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", pt: 0.5 }}>
             {actions}
           </Box>
         ) : null}

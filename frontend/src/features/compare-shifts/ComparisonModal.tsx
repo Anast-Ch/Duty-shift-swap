@@ -5,8 +5,10 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Divider from "@mui/material/Divider";
+import Grow from "@mui/material/Grow";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import DangerButton from "../../shared/ui/DangerButton";
 import { formatShift } from "../../shared/utils";
 import type { Shift } from "../../shared/types";
 
@@ -26,7 +28,13 @@ export default function ComparisonModal({
   onClose,
 }: ComparisonModalProps) {
   return (
-    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      slots={{ transition: Grow }}
+    >
       <DialogTitle>Сравнение обмена</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
@@ -47,7 +55,7 @@ export default function ComparisonModal({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Отмена</Button>
+        <DangerButton onClick={onClose}>Отмена</DangerButton>
         <Button variant="contained" onClick={onConfirm}>
           Отправить запрос
         </Button>

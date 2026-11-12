@@ -13,6 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
+import DangerButton from "../shared/ui/DangerButton";
 import DataState from "../shared/ui/DataState";
 import StatusChip from "../shared/ui/StatusChip";
 import SwapRequestCard from "../entities/swap-request/SwapRequestCard";
@@ -149,14 +150,14 @@ export default function SeniorQueuePage() {
                         >
                           Одобрить
                         </Button>
-                        <Button
+                        <DangerButton
                           variant="outlined"
                           onClick={() =>
                             handleResult(declineSwapRequestAsSenior(request.id))
                           }
                         >
                           Отклонить
-                        </Button>
+                        </DangerButton>
                       </Stack>
                     )
                   }
@@ -269,9 +270,12 @@ export default function SeniorQueuePage() {
                         <Button size="small" onClick={() => openDialog("edit", shift)}>
                           Редактировать
                         </Button>
-                        <Button size="small" onClick={() => openDialog("delete", shift)}>
+                        <DangerButton
+                          size="small"
+                          onClick={() => openDialog("delete", shift)}
+                        >
                           Удалить
-                        </Button>
+                        </DangerButton>
                       </TableCell>
                     </TableRow>
                   ))}

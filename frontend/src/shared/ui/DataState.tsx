@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import type { LoadStatus } from "../hooks/useDemoLoad";
 import EmptyState from "./EmptyState";
 import ErrorMessage from "./ErrorMessage";
+import FadeIn from "./FadeIn";
 import Spinner from "./Spinner";
 
 interface DataStateProps {
@@ -41,5 +42,5 @@ export default function DataState({
       <EmptyState text={emptyText} action={emptyAction} inPanel={inPanel} />
     );
   }
-  return <>{children}</>;
+  return <FadeIn>{children}</FadeIn>;
 }

@@ -4,10 +4,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import Grow from "@mui/material/Grow";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import DangerButton from "../../shared/ui/DangerButton";
 import { formatShift } from "../../shared/utils";
 import type { Shift, User } from "../../shared/types";
 import { validateShift } from "./validateShift";
@@ -73,7 +75,13 @@ export function ShiftFormDialog({
   }
 
   return (
-    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      slots={{ transition: Grow }}
+    >
       <DialogTitle>{dialogTitles[mode]}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
@@ -139,7 +147,7 @@ export function ShiftFormDialog({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Отмена</Button>
+        <DangerButton onClick={onClose}>Отмена</DangerButton>
         <Button
           variant={mode === "delete" ? "outlined" : "contained"}
           color={mode === "delete" ? "secondary" : "primary"}

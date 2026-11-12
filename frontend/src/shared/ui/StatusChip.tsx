@@ -2,38 +2,35 @@ import Chip from "@mui/material/Chip";
 import { shiftStatusLabels, swapStatusLabels } from "../utils";
 import type { ShiftStatus, SwapRequestStatus } from "../types";
 
+export const declinedColor = "#9B4343";
+
 type StatusChipProps =
   | { kind: "shift"; status: ShiftStatus }
   | { kind: "request"; status: SwapRequestStatus };
 
 const statusStyles: Record<
   ShiftStatus | SwapRequestStatus,
-  { bgcolor: string; color: string; borderColor: string }
+  { bgcolor: string; color: string }
 > = {
   approved: {
     bgcolor: "#5C8A3A",
     color: "#F5E6D3",
-    borderColor: "#5C8A3A",
   },
   on_exchange: {
     bgcolor: "#D96C3A",
     color: "#F5E6D3",
-    borderColor: "#D96C3A",
   },
   sent: {
     bgcolor: "#6B705C",
     color: "#F5E6D3",
-    borderColor: "#6B705C",
   },
   waiting_senior: {
     bgcolor: "#D96C3A",
     color: "#F5E6D3",
-    borderColor: "#D96C3A",
   },
   declined: {
-    bgcolor: "transparent",
-    color: "#1A1A1A",
-    borderColor: "#1A1A1A",
+    bgcolor: declinedColor,
+    color: "background.paper",
   },
 };
 
@@ -51,8 +48,12 @@ export default function StatusChip(props: StatusChipProps) {
       sx={{
         bgcolor: style.bgcolor,
         color: style.color,
-        border: `1px solid ${style.borderColor}`,
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: "text.primary",
         fontWeight: 600,
+        transition:
+          "background-color 0.2s, color 0.2s, border-color 0.2s",
       }}
     />
   );

@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
+import DangerButton from "../shared/ui/DangerButton";
 import DataState from "../shared/ui/DataState";
 import SwapRequestItem from "../entities/swap-request/SwapRequestItem";
 import { useAppData } from "../app/AppDataContext";
@@ -54,7 +55,7 @@ export default function SwapRequestsPage() {
   }
 
   return (
-    <Stack spacing={2} sx={{ maxWidth: 760, mx: "auto", width: "100%" }}>
+    <Stack spacing={2} sx={{ maxWidth: 650, mx: "auto", width: "100%" }}>
       <Typography variant="h4" component="h1">
         Запросы обмена
       </Typography>
@@ -98,7 +99,7 @@ export default function SwapRequestsPage() {
                       >
                         Принять
                       </Button>
-                      <Button
+                      <DangerButton
                         variant="outlined"
                         size="small"
                         onClick={() =>
@@ -106,7 +107,7 @@ export default function SwapRequestsPage() {
                         }
                       >
                         Отклонить
-                      </Button>
+                      </DangerButton>
                     </Stack>
                   ) : undefined
                 }
