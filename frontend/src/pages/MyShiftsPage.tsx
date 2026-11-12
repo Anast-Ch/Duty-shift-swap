@@ -9,14 +9,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
+import DataState from "../shared/ui/DataState";
 import StatusChip from "../shared/ui/StatusChip";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
+import { useDemoLoad } from "../shared/hooks/useDemoLoad";
 import { formatDate, formatTimeRange, isUpcoming, sortShifts } from "../shared/utils";
 
 export default function MyShiftsPage() {
   const { currentUser } = useAuth();
   const { shifts } = useAppData();
+  const { status, forceEmpty, retry } = useDemoLoad();
 
   if (!currentUser) {
     return null;
@@ -33,11 +36,12 @@ export default function MyShiftsPage() {
       <Typography variant="h4" component="h1">
         Мои смены
       </Typography>
-      {myShifts.length === 0 ? (
-        <Paper sx={{ p: 3 }}>
-          <Typography>Смен нет</Typography>
-        </Paper>
-      ) : (
+      <DataState
+        status={status}
+        isEmpty={forceEmpty || myShifts.length === 0}
+        emptyText="Смен нет"
+        onRetry={retry}
+      >
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -87,7 +91,7 @@ export default function MyShiftsPage() {
             </TableBody>
           </Table>
         </TableContainer>
-      )}
+      </DataState>
     </Stack>
   );
 }

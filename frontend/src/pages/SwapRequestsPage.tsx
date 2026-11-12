@@ -5,18 +5,14 @@ import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Tab from "@mui/material/Tab";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
-import StatusChip from "../shared/ui/StatusChip";
+import DataState from "../shared/ui/DataState";
+import SwapRequestItem from "../entities/swap-request/SwapRequestItem";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
-import { formatDateTime, formatShift, sortRequests } from "../shared/utils";
+import { useDemoLoad } from "../shared/hooks/useDemoLoad";
+import { sortRequests } from "../shared/utils";
 import type { OperationResult, SwapRequest } from "../shared/types";
 
 export default function SwapRequestsPage() {
@@ -31,6 +27,7 @@ export default function SwapRequestsPage() {
   } = useAppData();
   const [tab, setTab] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+  const { status, forceEmpty, retry } = useDemoLoad();
 
   if (!currentUser) {
     return null;
@@ -48,12 +45,6 @@ export default function SwapRequestsPage() {
     setErrorMessage(result.ok ? "" : result.error);
   }
 
-  function partnerName(request: SwapRequest): string {
-    const partnerId = tab === 0 ? request.respondentId : request.initiatorId;
-    const partner = getUserById(partnerId);
-    return partner ? partner.name : "-";
-  }
-
   function givingShiftId(request: SwapRequest): string {
     return tab === 0 ? request.initiatorShiftId : request.respondentShiftId;
   }
@@ -62,13 +53,8 @@ export default function SwapRequestsPage() {
     return tab === 0 ? request.respondentShiftId : request.initiatorShiftId;
   }
 
-  function shiftText(shiftId: string): string {
-    const shift = getShiftById(shiftId);
-    return shift ? formatShift(shift) : "-";
-  }
-
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{ maxWidth: 760, mx: "auto", width: "100%" }}>
       <Typography variant="h4" component="h1">
         Запросы обмена
       </Typography>
@@ -82,63 +68,53 @@ export default function SwapRequestsPage() {
           <Tab label="Входящие" />
         </Tabs>
       </Paper>
-      {visible.length === 0 ? (
-        <Paper sx={{ p: 3 }}>
-          <Typography>Нет запросов</Typography>
-        </Paper>
-      ) : (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Создан</TableCell>
-                <TableCell>{tab === 0 ? "Кому" : "От кого"}</TableCell>
-                <TableCell>Вы отдаёте</TableCell>
-                <TableCell>Вы получаете</TableCell>
-                <TableCell>Статус</TableCell>
-                <TableCell>Действия</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {visible.map((request) => (
-                <TableRow key={request.id}>
-                  <TableCell>{formatDateTime(request.createdAt)}</TableCell>
-                  <TableCell>{partnerName(request)}</TableCell>
-                  <TableCell>{shiftText(givingShiftId(request))}</TableCell>
-                  <TableCell>{shiftText(receivingShiftId(request))}</TableCell>
-                  <TableCell>
-                    <StatusChip kind="request" status={request.status} />
-                  </TableCell>
-                  <TableCell>
-                    {tab === 1 && request.status === "sent" ? (
-                      <Stack direction="row" spacing={1}>
-                        <Button
-                          variant="contained"
-                          size="small"
-                          onClick={() =>
-                            handleResult(acceptSwapRequest(request.id))
-                          }
-                        >
-                          Принять
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() =>
-                            handleResult(declineSwapRequest(request.id))
-                          }
-                        >
-                          Отклонить
-                        </Button>
-                      </Stack>
-                    ) : null}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+      <DataState
+        status={status}
+        isEmpty={forceEmpty || visible.length === 0}
+        emptyText="Нет запросов"
+        onRetry={retry}
+      >
+        <Stack spacing={2}>
+          {visible.map((request) => {
+            const partnerId =
+              tab === 0 ? request.respondentId : request.initiatorId;
+            return (
+              <SwapRequestItem
+                key={request.id}
+                request={request}
+                direction={tab === 0 ? "outgoing" : "incoming"}
+                partner={getUserById(partnerId)}
+                givingShift={getShiftById(givingShiftId(request))}
+                receivingShift={getShiftById(receivingShiftId(request))}
+                actions={
+                  tab === 1 && request.status === "sent" ? (
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() =>
+                          handleResult(acceptSwapRequest(request.id))
+                        }
+                      >
+                        Принять
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() =>
+                          handleResult(declineSwapRequest(request.id))
+                        }
+                      >
+                        Отклонить
+                      </Button>
+                    </Stack>
+                  ) : undefined
+                }
+              />
+            );
+          })}
+        </Stack>
+      </DataState>
     </Stack>
   );
 }

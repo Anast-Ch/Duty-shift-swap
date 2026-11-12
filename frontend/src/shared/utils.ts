@@ -4,6 +4,7 @@ import type {
   ShiftStatus,
   SwapRequest,
   SwapRequestStatus,
+  User,
 } from "./types";
 
 export const roleLabels: Record<Role, string> = {
@@ -46,16 +47,8 @@ export function formatShift(shift: Shift): string {
   return `${formatDate(shift.date)}, ${formatTimeRange(shift.startTime, shift.endTime)}`;
 }
 
-export function getStatusColor(
-  status: ShiftStatus | SwapRequestStatus,
-): "primary" | "secondary" | "default" {
-  if (status === "approved" || status === "sent") {
-    return "primary";
-  }
-  if (status === "on_exchange" || status === "waiting_senior") {
-    return "secondary";
-  }
-  return "default";
+export function userNameOrDash(user: User | undefined): string {
+  return user ? user.name : "-";
 }
 
 export function isActiveRequest(request: SwapRequest): boolean {
