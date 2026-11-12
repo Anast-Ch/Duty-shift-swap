@@ -2,26 +2,27 @@ import type { ReactNode } from "react";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { useAppData } from "../../app/AppDataContext";
 import { formatDateTime, formatShift } from "../../shared/utils";
-import type { SwapRequest } from "../../shared/types";
+import type { Shift, SwapRequest, User } from "../../shared/types";
 import StatusChip from "../../shared/ui/StatusChip";
 
 interface SwapRequestCardProps {
   request: SwapRequest;
+  initiator: User | undefined;
+  respondent: User | undefined;
+  initiatorShift: Shift | undefined;
+  respondentShift: Shift | undefined;
   actions?: ReactNode;
 }
 
 export default function SwapRequestCard({
   request,
+  initiator,
+  respondent,
+  initiatorShift,
+  respondentShift,
   actions,
 }: SwapRequestCardProps) {
-  const { getShiftById, getUserById } = useAppData();
-  const initiator = getUserById(request.initiatorId);
-  const respondent = getUserById(request.respondentId);
-  const initiatorShift = getShiftById(request.initiatorShiftId);
-  const respondentShift = getShiftById(request.respondentShiftId);
-
   if (!initiator || !respondent || !initiatorShift || !respondentShift) {
     return (
       <Paper sx={{ p: 2 }}>

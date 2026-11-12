@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Box from "@mui/material/Box";
 import type { LoadStatus } from "../hooks/useDemoLoad";
 import EmptyState from "./EmptyState";
 import ErrorMessage from "./ErrorMessage";
@@ -10,6 +11,7 @@ interface DataStateProps {
   emptyText: string;
   emptyAction?: ReactNode;
   onRetry: () => void;
+  inPanel?: boolean;
   children: ReactNode;
 }
 
@@ -19,16 +21,25 @@ export default function DataState({
   emptyText,
   emptyAction,
   onRetry,
+  inPanel = false,
   children,
 }: DataStateProps) {
   if (status === "loading") {
     return <Spinner />;
   }
   if (status === "error") {
-    return <ErrorMessage onRetry={onRetry} />;
+    return inPanel ? (
+      <Box sx={{ p: 2 }}>
+        <ErrorMessage onRetry={onRetry} />
+      </Box>
+    ) : (
+      <ErrorMessage onRetry={onRetry} />
+    );
   }
   if (isEmpty) {
-    return <EmptyState text={emptyText} action={emptyAction} />;
+    return (
+      <EmptyState text={emptyText} action={emptyAction} inPanel={inPanel} />
+    );
   }
   return <>{children}</>;
 }
