@@ -13,19 +13,38 @@ import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ComparisonModal from "../features/compare-shifts/ComparisonModal";
+import ShiftFilterFields from "../features/filter-shifts/ShiftFilterFields";
+import {
+  applyShiftFilters,
+  countActiveFilters,
+  emptyShiftFilters,
+  getShiftDates,
+  getShiftUsers,
+} from "../features/filter-shifts/shiftFilters";
+import type { ShiftFilters } from "../features/filter-shifts/shiftFilters";
 import ShiftCard from "../entities/shift/ShiftCard";
+import DataState from "../shared/ui/DataState";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
+import { useDemoLoad } from "../shared/hooks/useDemoLoad";
 import { formatShift, isShiftFree, isUpcoming, sortShifts } from "../shared/utils";
 
 export default function SelectShiftPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { currentUser } = useAuth();
-  const { shifts, swapRequests, getShiftById, getUserById, createSwapRequest } =
-    useAppData();
+  const {
+    users,
+    shifts,
+    swapRequests,
+    getShiftById,
+    getUserById,
+    createSwapRequest,
+  } = useAppData();
   const [selectedShiftId, setSelectedShiftId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [filters, setFilters] = useState<ShiftFilters>(emptyShiftFilters);
+  const { status, forceEmpty, retry } = useDemoLoad();
 
   if (!currentUser) {
     return null;
@@ -69,6 +88,10 @@ export default function SelectShiftPage() {
         isUpcoming(shift),
     ),
   );
+  const filtered = applyShiftFilters(candidates, filters);
+  const showPanel = candidates.length > 0 && !forceEmpty;
+  const filteredOut =
+    !forceEmpty && candidates.length > 0 && filtered.length === 0;
   const selectedShift = selectedShiftId ? getShiftById(selectedShiftId) : undefined;
   const selectedOwner = selectedShift ? getUserById(selectedShift.userId) : undefined;
 
@@ -111,19 +134,60 @@ export default function SelectShiftPage() {
       <Typography variant="h6" component="h2">
         Свободные смены других сотрудников
       </Typography>
-      {candidates.length === 0 ? (
-        <Paper sx={{ p: 3 }}>
-          <Typography>Подходящих смен нет</Typography>
+      {showPanel ? (
+        <Paper sx={{ p: 2 }}>
+          <Stack
+            direction="row"
+            sx={{ flexWrap: "wrap", alignItems: "center", gap: 2 }}
+          >
+            <Box sx={{ flex: "1 1 320px" }}>
+              <ShiftFilterFields
+                layout="row"
+                showStatus={false}
+                filters={filters}
+                onChange={setFilters}
+                users={getShiftUsers(candidates, users)}
+                dates={getShiftDates(candidates)}
+              />
+            </Box>
+            <Button
+              variant="text"
+              disabled={countActiveFilters(filters) === 0}
+              onClick={() => setFilters(emptyShiftFilters)}
+            >
+              Сбросить
+            </Button>
+          </Stack>
         </Paper>
-      ) : (
+      ) : null}
+      <DataState
+        status={status}
+        isEmpty={forceEmpty || filtered.length === 0}
+        emptyText={
+          filteredOut
+            ? "По выбранным фильтрам ничего не найдено"
+            : "Подходящих смен нет"
+        }
+        emptyAction={
+          filteredOut ? (
+            <Button
+              variant="outlined"
+              onClick={() => setFilters(emptyShiftFilters)}
+            >
+              Сбросить фильтры
+            </Button>
+          ) : undefined
+        }
+        onRetry={retry}
+      >
         <Paper>
           <List disablePadding>
-            {candidates.map((shift, index) => {
+            {filtered.map((shift, index) => {
               const owner = getUserById(shift.userId);
               return (
                 <ListItem
                   key={shift.id}
-                  divider={index < candidates.length - 1}
+                  divider={index < filtered.length - 1}
                   sx={{ justifyContent: "space-between", gap: 2 }}
                 >
                   <ListItemText
@@ -142,7 +206,7 @@ export default function SelectShiftPage() {
             })}
           </List>
         </Paper>
-      )}
+      </DataState>
       {selectedShift && selectedOwner ? (
         <ComparisonModal
           myShift={myShift}
