@@ -41,7 +41,7 @@ export const mockShifts: Shift[] = [
   {
     id: "sh1",
     userId: "u1",
-    date: "2026-10-20",
+    date: "2027-10-20",
     startTime: "08:00",
     endTime: "16:00",
     status: "on_exchange",
@@ -49,7 +49,7 @@ export const mockShifts: Shift[] = [
   {
     id: "sh2",
     userId: "u2",
-    date: "2026-10-20",
+    date: "2027-10-20",
     startTime: "16:00",
     endTime: "00:00",
     status: "approved",
@@ -57,7 +57,7 @@ export const mockShifts: Shift[] = [
   {
     id: "sh3",
     userId: "u3",
-    date: "2026-10-21",
+    date: "2027-10-21",
     startTime: "08:00",
     endTime: "16:00",
     status: "on_exchange",
@@ -65,7 +65,7 @@ export const mockShifts: Shift[] = [
   {
     id: "sh4",
     userId: "u4",
-    date: "2026-10-21",
+    date: "2027-10-21",
     startTime: "16:00",
     endTime: "00:00",
     status: "approved",
@@ -73,7 +73,7 @@ export const mockShifts: Shift[] = [
   {
     id: "sh5",
     userId: "u1",
-    date: "2026-10-22",
+    date: "2027-10-22",
     startTime: "08:00",
     endTime: "16:00",
     status: "approved",
@@ -88,7 +88,7 @@ export const mockSwapRequests: SwapRequest[] = [
     initiatorShiftId: "sh1",
     respondentShiftId: "sh3",
     status: "waiting_senior",
-    createdAt: "2026-10-15T09:30:00.000Z",
+    createdAt: "2027-10-15T09:30:00.000Z",
   },
   {
     id: "req-2",
@@ -97,7 +97,7 @@ export const mockSwapRequests: SwapRequest[] = [
     initiatorShiftId: "sh4",
     respondentShiftId: "sh5",
     status: "declined",
-    createdAt: "2026-10-14T12:10:00.000Z",
+    createdAt: "2027-10-14T12:10:00.000Z",
   },
   {
     id: "req-3",
@@ -106,6 +106,6 @@ export const mockSwapRequests: SwapRequest[] = [
     initiatorShiftId: "sh2",
     respondentShiftId: "sh4",
     status: "declined",
-    createdAt: "2026-10-13T08:00:00.000Z",
+    createdAt: "2027-10-13T08:00:00.000Z",
   },
 ];

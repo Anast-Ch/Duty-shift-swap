@@ -6,4 +6,7 @@ dist/
 .venv/
 venv/
 __pycache__/
-.DS_Store
+.DS_Storebackend/venv/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/.env

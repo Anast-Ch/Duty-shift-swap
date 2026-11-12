@@ -1,10 +1,10 @@
 import datetime as dt
 from typing import Annotated, Literal
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.crud import swap_request as swap_crud
-from app.deps import CurrentUser, DbSession, SeniorUser
+from app.deps import CurrentUser, DbSession, SeniorUser, require_senior
 from app.models import Role, SwapRequestStatus
 from app.schemas.swap_request import SwapRequestCreate, SwapRequestRead
 
@@ -26,10 +26,13 @@ def read_my_swap_requests(
     return swap_crud.list_my_requests(db, current_user, box, status_filter)
 
 
-@router.get("", response_model=list[SwapRequestRead])
+@router.get(
+    "",
+    response_model=list[SwapRequestRead],
+    dependencies=[Depends(require_senior)],
+)
 def read_all_swap_requests(
     db: DbSession,
-    senior: SeniorUser,
     status_filter: Annotated[list[SwapRequestStatus] | None, Query(alias="status")] = None,
     user_id: int | None = None,
     date_from: dt.date | None = None,

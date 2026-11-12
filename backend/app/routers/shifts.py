@@ -1,10 +1,10 @@
 import datetime as dt
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.crud import shift as shift_crud
-from app.deps import CurrentUser, DbSession, SeniorUser
+from app.deps import CurrentUser, DbSession, get_current_user, require_senior
 from app.models import Role, ShiftStatus
 from app.schemas.shift import ShiftCreate, ShiftRead, ShiftUpdate, ShiftWithOwner
 
@@ -51,29 +51,46 @@ def read_swap_candidates(
     )
 
 
-@router.get("/{shift_id}", response_model=ShiftRead)
-def read_shift(shift_id: int, db: DbSession, current_user: CurrentUser):
+@router.get(
+    "/{shift_id}",
+    response_model=ShiftRead,
+    dependencies=[Depends(get_current_user)],
+)
+def read_shift(shift_id: int, db: DbSession):
     shift = shift_crud.get_shift(db, shift_id)
     if shift is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Смена не найдена")
     return shift
 
 
-@router.post("", response_model=ShiftRead, status_code=status.HTTP_201_CREATED)
-def create_shift(data: ShiftCreate, db: DbSession, senior: SeniorUser):
+@router.post(
+    "",
+    response_model=ShiftRead,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_senior)],
+)
+def create_shift(data: ShiftCreate, db: DbSession):
     return shift_crud.create_shift(db, data)
 
 
-@router.put("/{shift_id}", response_model=ShiftRead)
-def update_shift(shift_id: int, data: ShiftUpdate, db: DbSession, senior: SeniorUser):
+@router.put(
+    "/{shift_id}",
+    response_model=ShiftRead,
+    dependencies=[Depends(require_senior)],
+)
+def update_shift(shift_id: int, data: ShiftUpdate, db: DbSession):
     shift = shift_crud.get_shift(db, shift_id)
     if shift is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Смена не найдена")
     return shift_crud.update_shift(db, shift, data)
 
 
-@router.delete("/{shift_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_shift(shift_id: int, db: DbSession, senior: SeniorUser):
+@router.delete(
+    "/{shift_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_senior)],
+)
+def delete_shift(shift_id: int, db: DbSession):
     shift = shift_crud.get_shift(db, shift_id)
     if shift is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Смена не найдена")
