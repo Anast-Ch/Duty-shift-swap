@@ -13,7 +13,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
-import StatusChip from "../components/StatusChip";
+import StatusChip from "../shared/ui/StatusChip";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
 import { formatDateTime, formatShift, sortRequests } from "../shared/utils";

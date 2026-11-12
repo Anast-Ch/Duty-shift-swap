@@ -1,6 +1,6 @@
 import Chip from "@mui/material/Chip";
-import { shiftStatusLabels, swapStatusLabels } from "../shared/utils";
-import type { ShiftStatus, SwapRequestStatus } from "../shared/types";
+import { shiftStatusLabels, swapStatusLabels } from "../utils";
+import type { ShiftStatus, SwapRequestStatus } from "../types";
 
 type StatusChipProps =
   | { kind: "shift"; status: ShiftStatus }

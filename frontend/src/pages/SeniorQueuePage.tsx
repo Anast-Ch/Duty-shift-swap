@@ -19,8 +19,8 @@ import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import StatusChip from "../components/StatusChip";
-import SwapRequestCard from "../components/SwapRequestCard";
+import StatusChip from "../shared/ui/StatusChip";
+import SwapRequestCard from "../entities/swap-request/SwapRequestCard";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
 import {

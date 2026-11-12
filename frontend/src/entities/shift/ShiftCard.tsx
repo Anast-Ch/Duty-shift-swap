@@ -2,9 +2,9 @@ import type { ReactNode } from "react";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import { formatDate, formatTimeRange } from "../shared/utils";
-import type { Shift } from "../shared/types";
-import StatusChip from "./StatusChip";
+import { formatDate, formatTimeRange } from "../../shared/utils";
+import type { Shift } from "../../shared/types";
+import StatusChip from "../../shared/ui/StatusChip";
 
 interface ShiftCardProps {
   shift: Shift;

@@ -9,7 +9,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import StatusChip from "../components/StatusChip";
+import StatusChip from "../shared/ui/StatusChip";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
 import { formatDate, formatTimeRange, isUpcoming, sortShifts } from "../shared/utils";
