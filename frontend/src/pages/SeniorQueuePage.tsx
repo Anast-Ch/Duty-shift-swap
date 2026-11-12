@@ -1,11 +1,6 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Tab from "@mui/material/Tab";
@@ -16,13 +11,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Tabs from "@mui/material/Tabs";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
 import StatusChip from "../shared/ui/StatusChip";
 import SwapRequestCard from "../entities/swap-request/SwapRequestCard";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
+import { ShiftFormDialog } from "../features/manage-shifts/ShiftFormDialog";
+import type { DialogMode } from "../features/manage-shifts/ShiftFormDialog";
 import {
   formatDate,
   formatDateTime,
@@ -31,94 +27,7 @@ import {
   sortRequests,
   sortShifts,
 } from "../shared/utils";
-import type { OperationResult, Shift, User } from "../shared/types";
-
-type DialogMode = "add" | "edit" | "delete";
-
-const dialogTitles: Record<DialogMode, string> = {
-  add: "Добавить смену",
-  edit: "Редактировать смену",
-  delete: "Удалить смену",
-};
-
-const dialogActions: Record<DialogMode, string> = {
-  add: "Добавить",
-  edit: "Сохранить",
-  delete: "Удалить",
-};
-
-interface ShiftDemoDialogProps {
-  mode: DialogMode;
-  shift: Shift | null;
-  users: User[];
-  onClose: () => void;
-}
-
-function ShiftDemoDialog({ mode, shift, users, onClose }: ShiftDemoDialogProps) {
-  const [userId, setUserId] = useState(shift ? shift.userId : "");
-  const [date, setDate] = useState(shift ? shift.date : "");
-  const [startTime, setStartTime] = useState(shift ? shift.startTime : "");
-  const [endTime, setEndTime] = useState(shift ? shift.endTime : "");
-
-  return (
-    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{dialogTitles[mode]}</DialogTitle>
-      <DialogContent>
-        <Stack spacing={2} sx={{ pt: 1 }}>
-          {mode === "delete" ? (
-            <Typography>
-              {shift ? `Смена: ${formatShift(shift)}` : "Смена не выбрана"}
-            </Typography>
-          ) : (
-            <>
-              <TextField
-                select
-                label="Сотрудник"
-                value={userId}
-                onChange={(event) => setUserId(event.target.value)}
-                fullWidth
-              >
-                {users.map((user) => (
-                  <MenuItem key={user.id} value={user.id}>
-                    {user.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                label="Дата (ГГГГ-ММ-ДД)"
-                value={date}
-                onChange={(event) => setDate(event.target.value)}
-                fullWidth
-              />
-              <TextField
-                label="Начало (ЧЧ:ММ)"
-                value={startTime}
-                onChange={(event) => setStartTime(event.target.value)}
-                fullWidth
-              />
-              <TextField
-                label="Конец (ЧЧ:ММ)"
-                value={endTime}
-                onChange={(event) => setEndTime(event.target.value)}
-                fullWidth
-              />
-            </>
-          )}
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Отмена</Button>
-        <Button
-          variant={mode === "delete" ? "outlined" : "contained"}
-          color={mode === "delete" ? "secondary" : "primary"}
-          onClick={onClose}
-        >
-          {dialogActions[mode]}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
+import type { OperationResult, Shift } from "../shared/types";
 
 export default function SeniorQueuePage() {
   const { currentUser } = useAuth();
@@ -330,7 +239,7 @@ export default function SeniorQueuePage() {
       ) : null}
 
       {dialogMode ? (
-        <ShiftDemoDialog
+        <ShiftFormDialog
           mode={dialogMode}
           shift={dialogShift}
           users={users}
