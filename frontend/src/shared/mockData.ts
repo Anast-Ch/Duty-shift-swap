@@ -78,6 +78,22 @@ export const mockShifts: Shift[] = [
     endTime: "16:00",
     status: "approved",
   },
+  {
+    id: "sh6",
+    userId: "u1",
+    date: "2027-10-25",
+    startTime: "08:00",
+    endTime: "16:00",
+    status: "on_exchange",
+  },
+  {
+    id: "sh7",
+    userId: "u4",
+    date: "2027-10-26",
+    startTime: "16:00",
+    endTime: "00:00",
+    status: "on_exchange",
+  },
 ];
 
 export const mockSwapRequests: SwapRequest[] = [
@@ -107,5 +123,23 @@ export const mockSwapRequests: SwapRequest[] = [
     respondentShiftId: "sh4",
     status: "declined",
     createdAt: "2027-10-13T08:00:00.000Z",
+  },
+  {
+    id: "req-4",
+    initiatorId: "u1",
+    respondentId: "u4",
+    initiatorShiftId: "sh4",
+    respondentShiftId: "sh5",
+    status: "approved",
+    createdAt: "2027-10-10T10:00:00.000Z",
+  },
+  {
+    id: "req-5",
+    initiatorId: "u4",
+    respondentId: "u1",
+    initiatorShiftId: "sh7",
+    respondentShiftId: "sh6",
+    status: "sent",
+    createdAt: "2027-10-16T11:20:00.000Z",
   },
 ];
