@@ -12,6 +12,8 @@ import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import { alpha } from "@mui/material/styles";
+import type { SxProps, Theme } from "@mui/material/styles";
 import ComparisonModal from "../features/compare-shifts/ComparisonModal";
 import ShiftFilterFields from "../features/filter-shifts/ShiftFilterFields";
 import {
@@ -24,10 +26,20 @@ import {
 import type { ShiftFilters } from "../features/filter-shifts/shiftFilters";
 import ShiftCard from "../entities/shift/ShiftCard";
 import DataState from "../shared/ui/DataState";
+import { declinedColor } from "../shared/ui/StatusChip";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
 import { useDemoLoad } from "../shared/hooks/useDemoLoad";
 import { formatShift, isShiftFree, isUpcoming, sortShifts } from "../shared/utils";
+
+const backButtonSx: SxProps<Theme> = {
+  color: declinedColor,
+  borderColor: declinedColor,
+  "&:hover": {
+    borderColor: declinedColor,
+    backgroundColor: alpha(declinedColor, 0.08),
+  },
+};
 
 export default function SelectShiftPage() {
   const navigate = useNavigate();
@@ -120,7 +132,13 @@ export default function SelectShiftPage() {
   return (
     <Stack spacing={2}>
       <Box>
-        <Button component={RouterLink} to="/">
+        <Button
+          component={RouterLink}
+          to="/"
+          variant="outlined"
+          color="inherit"
+          sx={backButtonSx}
+        >
           Назад
         </Button>
       </Box>

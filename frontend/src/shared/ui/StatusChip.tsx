@@ -1,4 +1,5 @@
 import Chip from "@mui/material/Chip";
+import { alpha, darken } from "@mui/material/styles";
 import { shiftStatusLabels, swapStatusLabels } from "../utils";
 import type { ShiftStatus, SwapRequestStatus } from "../types";
 
@@ -8,30 +9,12 @@ type StatusChipProps =
   | { kind: "shift"; status: ShiftStatus }
   | { kind: "request"; status: SwapRequestStatus };
 
-const statusStyles: Record<
-  ShiftStatus | SwapRequestStatus,
-  { bgcolor: string; color: string }
-> = {
-  approved: {
-    bgcolor: "#5C8A3A",
-    color: "#F5E6D3",
-  },
-  on_exchange: {
-    bgcolor: "#D96C3A",
-    color: "#F5E6D3",
-  },
-  sent: {
-    bgcolor: "#6B705C",
-    color: "#F5E6D3",
-  },
-  waiting_senior: {
-    bgcolor: "#D96C3A",
-    color: "#F5E6D3",
-  },
-  declined: {
-    bgcolor: declinedColor,
-    color: "background.paper",
-  },
+const statusColors: Record<ShiftStatus | SwapRequestStatus, string> = {
+  approved: "#5C8A3A",
+  on_exchange: "#D96C3A",
+  sent: "#6B705C",
+  waiting_senior: "#D96C3A",
+  declined: declinedColor,
 };
 
 export default function StatusChip(props: StatusChipProps) {
@@ -40,17 +23,17 @@ export default function StatusChip(props: StatusChipProps) {
       ? shiftStatusLabels[props.status]
       : swapStatusLabels[props.status];
 
-  const style = statusStyles[props.status];
+  const color = statusColors[props.status];
 
   return (
     <Chip
       label={label}
       sx={{
-        bgcolor: style.bgcolor,
-        color: style.color,
+        bgcolor: alpha(color, 0.12),
+        color: darken(color, 0.25),
         borderWidth: 1,
         borderStyle: "solid",
-        borderColor: "text.primary",
+        borderColor: color,
         fontWeight: 600,
         transition:
           "background-color 0.2s, color 0.2s, border-color 0.2s",

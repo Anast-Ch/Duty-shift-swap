@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material/styles";
+import { alpha, createTheme } from "@mui/material/styles";
 
 const colors = {
   sky: "#A8C1D9",
@@ -9,6 +9,8 @@ const colors = {
   terracotta: "#D96C3A",
   red: "#B3261E",
 };
+
+export const tableGridColor = alpha(colors.ink, 0.25);
 
 const bodyFont =
   '"Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif';
@@ -217,6 +219,11 @@ const appTheme = createTheme({
     },
     MuiTableCell: {
       styleOverrides: {
+        root: {
+          borderBottom: `1px solid ${tableGridColor}`,
+          borderRight: `1px solid ${tableGridColor}`,
+          "&:last-child": { borderRight: 0 },
+        },
         head: ({ theme }) => ({
           fontWeight: 700,
           backgroundColor: colors.creamDark,

@@ -17,6 +17,7 @@ import DangerButton from "../shared/ui/DangerButton";
 import DataState from "../shared/ui/DataState";
 import StatusChip from "../shared/ui/StatusChip";
 import SwapRequestCard from "../entities/swap-request/SwapRequestCard";
+import { tableGridColor } from "../app/theme";
 import { useAppData } from "../app/AppDataContext";
 import { useAuth } from "../app/AuthContext";
 import { ShiftFormDialog } from "../features/manage-shifts/ShiftFormDialog";
@@ -242,7 +243,7 @@ export default function SeniorQueuePage() {
               ) : undefined
             }
           >
-            <TableContainer>
+            <TableContainer sx={{ borderTop: `1px solid ${tableGridColor}` }}>
               <Table>
                 <TableHead>
                   <TableRow>
