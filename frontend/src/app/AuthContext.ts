@@ -3,8 +3,12 @@ import type { User } from "../shared/types";
 
 export interface AuthContextValue {
   currentUser: User | null;
-  login: (email: string, password: string) => boolean;
-  logout: () => void;
+  status: "loading" | "ready" | "error";
+  notice: string | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  retry: () => void;
+  clearNotice: () => void;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

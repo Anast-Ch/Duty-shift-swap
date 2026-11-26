@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models import Role, Shift, ShiftStatus, User
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import RegistrationRequest, UserCreate, UserUpdate
 from app.security import hash_password
 
 
@@ -42,22 +42,39 @@ def list_users(
     return list(db.scalars(query.order_by(User.name, User.id)))
 
 
-def create_user(db: Session, data: UserCreate) -> User:
-    if get_user_by_email(db, data.email):
+def _create_user(db: Session, name: str, email: str, password: str, role: Role) -> User:
+    if get_user_by_email(db, email):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Пользователь с таким email уже есть",
         )
     user = User(
-        name=data.name,
-        email=data.email,
-        password_hash=hash_password(data.password),
-        role=data.role,
+        name=name,
+        email=email,
+        password_hash=hash_password(password),
+        role=role,
     )
     db.add(user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        if get_user_by_email(db, email):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Пользователь с таким email уже есть",
+            )
+        raise
     db.refresh(user)
     return user
+
+
+def create_user(db: Session, data: UserCreate) -> User:
+    return _create_user(db, data.name, data.email, data.password, data.role)
+
+
+def register_user(db: Session, data: RegistrationRequest) -> User:
+    return _create_user(db, data.name, data.email, data.password, Role.EMPLOYEE)
 
 
 def update_user(db: Session, user: User, data: UserUpdate) -> User:

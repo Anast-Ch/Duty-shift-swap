@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.crud import shift as shift_crud
-from app.deps import CurrentUser, DbSession, get_current_user, require_senior
+from app.deps import CurrentUser, DbSession, require_senior
 from app.models import Role, ShiftStatus
 from app.schemas.shift import ShiftCreate, ShiftRead, ShiftUpdate, ShiftWithOwner
 
@@ -51,15 +51,13 @@ def read_swap_candidates(
     )
 
 
-@router.get(
-    "/{shift_id}",
-    response_model=ShiftRead,
-    dependencies=[Depends(get_current_user)],
-)
-def read_shift(shift_id: int, db: DbSession):
+@router.get("/{shift_id}", response_model=ShiftRead)
+def read_shift(shift_id: int, db: DbSession, current_user: CurrentUser):
     shift = shift_crud.get_shift(db, shift_id)
     if shift is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Смена не найдена")
+    if shift.user_id != current_user.id and current_user.role != Role.SENIOR:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Нет доступа к смене")
     return shift
 
 

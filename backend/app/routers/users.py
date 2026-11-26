@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.crud import user as user_crud
-from app.deps import CurrentUser, DbSession, get_current_user, require_senior
+from app.deps import CurrentUser, DbSession, SeniorUser, require_senior
 from app.models import Role
 from app.schemas.user import UserCreate, UserRead, UserUpdate
 
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get("", response_model=list[UserRead])
 def read_users(
     db: DbSession,
-    current_user: CurrentUser,
+    current_user: SeniorUser,
     search: str | None = None,
     role: Role | None = None,
     exclude_me: bool = False,
@@ -21,15 +21,13 @@ def read_users(
     return user_crud.list_users(db, search, role, exclude_id, has_free_shifts)
 
 
-@router.get(
-    "/{user_id}",
-    response_model=UserRead,
-    dependencies=[Depends(get_current_user)],
-)
-def read_user(user_id: int, db: DbSession):
+@router.get("/{user_id}", response_model=UserRead)
+def read_user(user_id: int, db: DbSession, current_user: CurrentUser):
     user = user_crud.get_user(db, user_id)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Пользователь не найден")
+    if user.id != current_user.id and current_user.role != Role.SENIOR:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Нет доступа к пользователю")
     return user
 
 

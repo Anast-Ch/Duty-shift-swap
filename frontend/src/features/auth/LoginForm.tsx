@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -6,47 +6,44 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { useAuth } from "../../app/AuthContext";
+import { ApiError } from "./authApi";
+import PasswordField from "./PasswordField";
 import { validateLogin } from "./validateLogin";
 import type { LoginErrors } from "./validateLogin";
 
 export function LoginForm() {
-  const { login } = useAuth();
+  const { login, notice, clearNotice } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<LoginErrors>({});
-  const [loginFailed, setLoginFailed] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const timerRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current !== null) {
-        window.clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
-
-  function handleSubmit() {
+  async function handleSubmit() {
     if (isSubmitting) return;
-    setLoginFailed(false);
+    setLoginError(null);
+    clearNotice();
 
     const validationErrors = validateLogin({ email, password });
     setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) {
-      return;
-    }
+    if (Object.keys(validationErrors).length > 0) return;
 
     setIsSubmitting(true);
-    timerRef.current = window.setTimeout(() => {
-      timerRef.current = null;
-      if (login(email.trim(), password)) {
-        navigate("/");
+    try {
+      await login(email, password);
+      navigate("/");
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        setLoginError("Неверный email или пароль");
+      } else if (error instanceof Error && error.message.startsWith("Не удалось подтвердить")) {
+        setLoginError(error.message);
       } else {
-        setLoginFailed(true);
-        setIsSubmitting(false);
+        setLoginError("Не удалось выполнить вход. Проверьте соединение с сервером.");
       }
-    }, 500);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -55,7 +52,7 @@ export function LoginForm() {
       noValidate
       onSubmit={(event) => {
         event.preventDefault();
-        handleSubmit();
+        void handleSubmit();
       }}
     >
       <Stack spacing={2}>
@@ -66,29 +63,27 @@ export function LoginForm() {
           onChange={(event) => {
             setEmail(event.target.value);
             setErrors((prev) => ({ ...prev, email: undefined }));
-            setLoginFailed(false);
+            setLoginError(null);
           }}
           error={Boolean(errors.email)}
           helperText={errors.email}
           fullWidth
         />
-        <TextField
+        <PasswordField
           label="Пароль"
-          type="password"
           value={password}
           autoComplete="current-password"
           onChange={(event) => {
             setPassword(event.target.value);
             setErrors((prev) => ({ ...prev, password: undefined }));
-            setLoginFailed(false);
+            setLoginError(null);
           }}
           error={Boolean(errors.password)}
           helperText={errors.password}
           fullWidth
         />
-        {loginFailed ? (
-          <Alert severity="error">Неверный email или пароль</Alert>
-        ) : null}
+        {notice ? <Alert severity="warning" onClose={clearNotice}>{notice}</Alert> : null}
+        {loginError ? <Alert severity="error">{loginError}</Alert> : null}
         <Button type="submit" variant="contained" disabled={isSubmitting}>
           {isSubmitting ? "Входим…" : "Войти"}
         </Button>

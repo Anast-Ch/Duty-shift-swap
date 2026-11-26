@@ -77,7 +77,7 @@ export default function Layout() {
           <Typography variant="body2">
             {currentUser.name} ({roleLabels[currentUser.role]})
           </Typography>
-          <DangerButton variant="outlined" onClick={logout}>
+          <DangerButton variant="outlined" onClick={() => void logout()}>
             Выйти
           </DangerButton>
         </Container>

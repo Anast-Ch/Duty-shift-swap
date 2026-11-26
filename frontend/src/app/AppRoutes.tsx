@@ -4,8 +4,12 @@ import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Layout from "./Layout";
+import AppDataProvider from "./AppDataProvider";
 import { useAuth } from "./AuthContext";
+import ErrorMessage from "../shared/ui/ErrorMessage";
+import Spinner from "../shared/ui/Spinner";
 import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
 import MyShiftsPage from "../pages/MyShiftsPage";
 import SelectShiftPage from "../pages/SelectShiftPage";
 import SeniorQueuePage from "../pages/SeniorQueuePage";
@@ -18,7 +22,13 @@ function PublicOnly() {
 
 function RequireAuth() {
   const { currentUser } = useAuth();
-  return currentUser ? <Layout /> : <Navigate to="/login" replace />;
+  return currentUser ? (
+    <AppDataProvider key={currentUser.id}>
+      <Layout />
+    </AppDataProvider>
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }
 
 function AccessDenied() {
@@ -57,10 +67,23 @@ function NotFound() {
 }
 
 export default function AppRoutes() {
+  const { status, retry, logout } = useAuth();
+
+  if (status === "loading") return <Spinner />;
+  if (status === "error") {
+    return (
+      <Container maxWidth="sm" sx={{ py: 6 }}>
+        <ErrorMessage onRetry={retry} />
+        <Button onClick={() => void logout()} sx={{ mt: 2 }}>Выйти</Button>
+      </Container>
+    );
+  }
+
   return (
     <Routes>
       <Route element={<PublicOnly />}>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Route>
       <Route element={<RequireAuth />}>
         <Route path="/" element={<MyShiftsPage />} />
